@@ -6,57 +6,53 @@
  */
 
 #include "codebook.hpp"
-#include <glog/logging.h>
 #include <vl/kmeans.h>
 #include <vl/host.h>
 #include <vl/kdtree.h>
+#include <iostream>
+#include <boost/shared_ptr.hpp>
+using namespace std;
+using boost::shared_ptr;
 
 int main(int argc, char* argv[])
 {
-  google::InitGoogleLogging(argv[0]);
-
-  LOG(ERROR)<< "Start testing codebook";
-
   VlRand rand;
 
   uint32_t numData = 10000;
   uint32_t dimension = 128;
   uint32_t numCenters = 2000;
 
-  float * data;
-
   uint32_t dataIdx, d;
 
   vl_rand_init(&rand);
   vl_rand_seed(&rand, 1000);
 
-  LOG(ERROR)<< "Start Generating data";
+  cerr << "Start Generating data" << endl;;
 
-  data = (float*) vl_malloc(sizeof(float) * dimension * numData);
+  float* _data = (float*) malloc(sizeof(float) * dimension * numData);
+  shared_ptr<float> data(_data);
 
   for (dataIdx = 0; dataIdx < numData; dataIdx++)
   {
     for (d = 0; d < dimension; d++)
     {
       float randomNum = (float) vl_rand_real3(&rand) + 1;
-      data[dataIdx * dimension + d] = randomNum;
+      _data[dataIdx * dimension + d] = randomNum;
     }
   }
 
-  jieshen::CodeBook codebook;
+  EYE::CodeBook codebook;
   codebook.set_K(numCenters);
   codebook.set_dim(dimension);
 
-  LOG(ERROR)<< "Start clustering";
+  cerr << "Start clustering" << endl;
 
   codebook.GenKMeans(data, numData);
-  LOG(ERROR)<< "Done";
-
-  vl_free(data);
+  cerr << "Done" << endl;
 
   FILE* output = fopen("book.txt", "w");
   codebook.save(output);
-  LOG(ERROR) << "save to book.txt";
+  cerr << "save to book.txt" << endl;
 
   return 0;
 }

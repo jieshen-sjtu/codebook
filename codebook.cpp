@@ -9,11 +9,11 @@
 
 #include <vl/kmeans.h>
 
-#include <glog/logging.h>
 #include <cstdlib>
 #include <cstdio>
+#include <cstring>
 
-namespace jieshen
+namespace EYE
 {
   CodeBook::CodeBook()
       : dim_(0), K_(0), clusters_(NULL)
@@ -43,16 +43,19 @@ namespace jieshen
   void CodeBook::save(FILE* output) const
   {
     if (clusters_ == NULL)
-      LOG(FATAL)<< "Check the clusters";
-
-      fprintf(output, "num_centers:%u dim:%u\n", K_, dim_);
-      for (uint32_t i = 0; i < K_ * dim_; ++i)
-      {
-        fprintf(output, "%f ", clusters_[i]);
-        if ((i + 1) % dim_ == 0)
-        fprintf(output, "\n");
-      }
+    {
+      fprintf(stderr, "Check the clusters\n");
+      exit(-1);
     }
+
+    fprintf(output, "num_centers:%u dim:%u\n", K_, dim_);
+    for (uint32_t i = 0; i < K_ * dim_; ++i)
+    {
+      fprintf(output, "%f ", clusters_[i]);
+      if ((i + 1) % dim_ == 0)
+        fprintf(output, "\n");
+    }
+  }
 
   void CodeBook::load(FILE* input)
   {
@@ -67,8 +70,10 @@ namespace jieshen
     }
   }
 
-  void CodeBook::GenKMeans(const float* const data, const uint32_t num_data)
+  void CodeBook::GenKMeans(const shared_ptr<float>& org_data,
+                           const uint32_t num_data)
   {
+    const float* data = org_data.get();
 
     if (data == NULL)
     {

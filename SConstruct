@@ -19,7 +19,7 @@ LIB_PATH = Split('''./lib
 
 _LIBS = Split('''
                  libvl.so
-                 libglog.so
+                 libboost_system
                 ''')
 
 

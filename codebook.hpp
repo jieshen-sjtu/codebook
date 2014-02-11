@@ -11,9 +11,12 @@
 #include <stdint.h>
 #include <cstddef>
 #include <cstdio>
+#include <boost/shared_ptr.hpp>
 
-namespace jieshen
+namespace EYE
 {
+  using boost::shared_ptr;
+
   class CodeBook
   {
   public:
@@ -67,7 +70,7 @@ namespace jieshen
 
   public:
     // ensure that the clusters should be allocate the memory outside
-    void GenKMeans(const float* const data, const uint32_t num_data);
+    void GenKMeans(const shared_ptr<float>& data, const uint32_t num_data);
   };
 }
 
